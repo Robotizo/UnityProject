@@ -2,13 +2,10 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour
 {
-    [SerializeField] private Rigidbody sphereRigidbody; 
-    [SerializeField] private float ballSpeed = 2f; 
-
-    void Start()
-    {
-        Debug.Log("Start method called!");
-    }
+    [SerializeField] private Rigidbody sphereRigidbody;
+    [SerializeField] private float ballSpeed = 2f;
+    [SerializeField] private float jumpForce = 5f;
+    private bool isGrounded = true;
 
     void Update()
     {
@@ -22,6 +19,23 @@ public class BallController : MonoBehaviour
         Vector3 inputXZPlane = new Vector3(inputVector.x, 0, inputVector.y);
         sphereRigidbody.AddForce(inputXZPlane * ballSpeed);
 
-        Debug.Log("Resul Vector: " + inputVector);
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            sphereRigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+
+        Debug.Log("Collided with: " + collision.gameObject.name);
+
+
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+             Debug.Log("Ball is on ground.");
+        }
     }
 }
